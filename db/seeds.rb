@@ -26,5 +26,5 @@ example_tasks = [
 
 example_tasks.each do |task_attrs|
   category = Category.find_by(name: task_attrs[:category])
-  Task.find_or_create_by!(title: task_attrs[:name], category: category)
+  Task.find_or_create_by!(name: task_attrs[:name], category: category)
 end
