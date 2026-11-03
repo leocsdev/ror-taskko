@@ -14,3 +14,17 @@ default_categories = %w[Work Learning Personal Finance Health]
 default_categories.each do |category_name|
   Category.find_or_create_by!(name: category_name)
 end
+
+# Seed some example tasks
+example_tasks = [
+  { name: "Finish report", category: "Work" },
+  { name: "Read a book", category: "Learning" },
+  { name: "Pay bills", category: "Finance" },
+  { name: "Exercise", category: "Health" },
+  { name: "Plan vacation", category: "Personal" }
+]
+
+example_tasks.each do |task_attrs|
+  category = Category.find_by(name: task_attrs[:category])
+  Task.find_or_create_by!(title: task_attrs[:name], category: category)
+end
