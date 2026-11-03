@@ -9,7 +9,7 @@
 #
 # Indexes
 #
-#  index_categories_on_name  (name) UNIQUE
+#  index_categories_on_lower_name  (lower((name)::text)) UNIQUE
 #
 class Category < ApplicationRecord
   # When a category is deleted, set the category_id of its tasks to null
@@ -21,4 +21,7 @@ class Category < ApplicationRecord
            foreign_key: "ai_suggested_category_id",
            dependent: :nullify,
            inverse_of: :ai_suggested_category
+
+  # Validate case-insensitive uniqueness of name
+  validates :name, presence: true, uniqueness: { case_sensitive: false }
 end

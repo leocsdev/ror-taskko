@@ -28,6 +28,9 @@
 #  fk_rails_...  (category_id => categories.id)
 #
 class Task < ApplicationRecord
+  PRIORITIES = %w[low medium high urgent].freeze
+  AI_STATUSES = %w[not_requested pending completed failed].freeze
+
   # A task can exist without being assigned to a category
   belongs_to :category, optional: true
 
@@ -36,4 +39,18 @@ class Task < ApplicationRecord
              class_name: "Category",
              optional: true,
              inverse_of: :ai_suggested_tasks
+
+  # Validate presence of title
+  validates :title, presence: true
+
+  # Validate priority agains allowed values
+  validates :priority, inclusion: { in: PRIORITIES }
+
+  # Validate AI status against allowed values
+  validates :ai_status, inclusion: { in: AI_STATUSES }
+
+  # Validate AI suggested priority against allowed values when present
+  validates :ai_suggested_priority,
+            inclusion: { in: PRIORITIES },
+            allow_nil: true
 end
