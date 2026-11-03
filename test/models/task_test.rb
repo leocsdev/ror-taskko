@@ -73,4 +73,16 @@ class TaskTest < ActiveSupport::TestCase
     task = Task.new(title: "Sample Task", ai_suggested_priority: nil)
     assert task.valid?
   end
+
+  test "should be valid without a category" do
+    task = Task.new(title: "Sample Task", category: nil)
+
+    assert task.valid?
+  end
+
+  test "should be valid without an AI suggested category" do
+    task = Task.new(title: "Sample Task", ai_suggested_category: nil)
+
+    assert task.valid?
+  end
 end
