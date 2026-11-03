@@ -29,4 +29,23 @@ class CategoryTest < ActiveSupport::TestCase
     assert_not duplicate_category.save
     assert_includes duplicate_category.errors[:name], "has already been taken"
   end
+
+  test "should nullify associated task category when category is deleted" do
+    category = Category.create!(name: "Work")
+
+    task = Task.create!(
+      title: "Sample Task",
+      category: category,
+      ai_suggested_category: category
+    )
+
+    # Delete the categor
+    category.destroy
+
+    # Reload the task to reflect changes in the database
+    task.reload
+
+    assert_nil task.category
+    assert_nil task.ai_suggested_category
+  end
 end
