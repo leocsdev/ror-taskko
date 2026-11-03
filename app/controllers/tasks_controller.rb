@@ -68,6 +68,19 @@ class TasksController < ApplicationController
     end
   end
 
+  def destroy
+    @task = Task.find(params[:id])
+    @task.destroy!
+
+    respond_to do |format|
+      format.turbo_stream do
+        @tasks = Task.all
+        @active_tasks_count = Task.where(completed_at: nil).count
+      end
+      format.html { redirect_to root_path, status: :see_other }
+    end
+  end
+
   private
 
   def task_params
