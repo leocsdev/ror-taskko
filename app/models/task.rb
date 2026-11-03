@@ -40,8 +40,8 @@ class Task < ApplicationRecord
              optional: true,
              inverse_of: :ai_suggested_tasks
 
-  # Validate presence of title
-  validates :title, presence: true
+  # Validate presence of name
+  validates :name, presence: true
 
   # Validate priority agains allowed values
   validates :priority, inclusion: { in: PRIORITIES }
