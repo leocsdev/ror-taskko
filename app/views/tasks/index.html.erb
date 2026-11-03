@@ -26,12 +26,7 @@
 
   <%= render "tasks_list", tasks: @tasks %>
 
-  <% if @tasks.any? %>
-    <footer class="mt-8 flex items-center justify-between border-t border-slate-200/80 pt-4 text-xs text-slate-400">
-      <span>Taskko Personal Task Manager</span>
-      <span id="total_task_count"><%= pluralize(@tasks.size, "task") %></span>
-    </footer>
-  <% end %>
+  <%= render "task_summary", tasks: @tasks %>
 </section>
 
 <%= turbo_frame_tag "modal" %>
