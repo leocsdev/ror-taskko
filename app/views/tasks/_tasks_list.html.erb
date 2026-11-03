@@ -1,0 +1,10 @@
+<div id="tasks_list" class="mt-5 space-y-3">
+  <% if tasks.any? %>
+    <%= render partial: "task", collection: tasks, as: :task %>
+  <% else %>
+    <div class="rounded-xl border border-dashed border-slate-300 bg-white px-4 py-12 text-center">
+      <h2 class="text-sm font-semibold text-slate-900">No tasks yet</h2>
+      <p class="mx-auto mt-1 max-w-sm text-xs text-slate-500">Tasks you add will appear here.</p>
+    </div>
+  <% end %>
+</div>
