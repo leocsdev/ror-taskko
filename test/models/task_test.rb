@@ -42,4 +42,17 @@ class TaskTest < ActiveSupport::TestCase
     assert_not task.valid?
     assert_includes task.errors[:priority], "is not included in the list"
   end
+
+  test "should accept valid AI statuses" do
+    Task::AI_STATUSES.each do |status|
+      task = Task.new(title: "Sample Task", ai_status: status)
+      assert task.valid?, "Expected task with AI status #{status} to be valid"
+    end
+  end
+
+  test "should reject invalid AI statuses" do
+    task = Task.new(title: "Sample Task", ai_status: "invalid_status")
+    assert_not task.valid?
+    assert_includes task.errors[:ai_status], "is not included in the list"
+  end
 end
