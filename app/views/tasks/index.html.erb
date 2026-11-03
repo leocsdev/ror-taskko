@@ -1,0 +1,8 @@
+<section class="mb-8 flex flex-col">
+  <h1 class="text-2xl font-bold mb-4">Tasks</h1>
+  <ul>
+    <% @tasks.each do |task| %>
+      <li><%= task.title %> - <%= task.category.name if task.category %></li>
+    <% end %>
+  </ul>
+</section>
