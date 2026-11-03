@@ -12,8 +12,8 @@ require "test_helper"
 #  completed_at             :datetime
 #  description              :text
 #  due_at                   :datetime
+#  name                     :string           not null
 #  priority                 :string           default("medium"), not null
-#  title                    :string           not null
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
 #  ai_suggested_category_id :bigint
@@ -32,56 +32,56 @@ require "test_helper"
 class TaskTest < ActiveSupport::TestCase
   test "should accept valid priorities" do
     Task::PRIORITIES.each do |priority|
-      task = Task.new(title: "Sample Task", priority: priority)
+      task = Task.new(name: "Sample Task", priority: priority)
       assert task.valid?, "Expected task with priority #{priority} to be valid"
     end
   end
 
   test "should reject invalid priorities" do
-    task = Task.new(title: "Sample Task", priority: "invalid_priority")
+    task = Task.new(name: "Sample Task", priority: "invalid_priority")
     assert_not task.valid?
     assert_includes task.errors[:priority], "is not included in the list"
   end
 
   test "should accept valid AI statuses" do
     Task::AI_STATUSES.each do |status|
-      task = Task.new(title: "Sample Task", ai_status: status)
+      task = Task.new(name: "Sample Task", ai_status: status)
       assert task.valid?, "Expected task with AI status #{status} to be valid"
     end
   end
 
   test "should reject invalid AI statuses" do
-    task = Task.new(title: "Sample Task", ai_status: "invalid_status")
+    task = Task.new(name: "Sample Task", ai_status: "invalid_status")
     assert_not task.valid?
     assert_includes task.errors[:ai_status], "is not included in the list"
   end
 
   test "should accept valid AI suggested priorities" do
     Task::PRIORITIES.each do |priority|
-      task = Task.new(title: "Sample Task", ai_suggested_priority: priority)
+      task = Task.new(name: "Sample Task", ai_suggested_priority: priority)
       assert task.valid?, "Expected task with AI suggested priority #{priority} to be valid"
     end
   end
 
   test "should reject invalid AI suggested priorities" do
-    task = Task.new(title: "Sample Task", ai_suggested_priority: "invalid_priority")
+    task = Task.new(name: "Sample Task", ai_suggested_priority: "invalid_priority")
     assert_not task.valid?
     assert_includes task.errors[:ai_suggested_priority], "is not included in the list"
   end
 
   test "should accept nil for AI suggested priority" do
-    task = Task.new(title: "Sample Task", ai_suggested_priority: nil)
+    task = Task.new(name: "Sample Task", ai_suggested_priority: nil)
     assert task.valid?
   end
 
   test "should be valid without a category" do
-    task = Task.new(title: "Sample Task", category: nil)
+    task = Task.new(name: "Sample Task", category: nil)
 
     assert task.valid?
   end
 
   test "should be valid without an AI suggested category" do
-    task = Task.new(title: "Sample Task", ai_suggested_category: nil)
+    task = Task.new(name: "Sample Task", ai_suggested_category: nil)
 
     assert task.valid?
   end

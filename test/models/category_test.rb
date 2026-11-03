@@ -34,7 +34,7 @@ class CategoryTest < ActiveSupport::TestCase
     category = Category.create!(name: "Work")
 
     task = Task.create!(
-      title: "Sample Task",
+      name: "Sample Task",
       category: category,
       ai_suggested_category: category
     )

@@ -10,8 +10,8 @@
 #  completed_at             :datetime
 #  description              :text
 #  due_at                   :datetime
+#  name                     :string           not null
 #  priority                 :string           default("medium"), not null
-#  title                    :string           not null
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
 #  ai_suggested_category_id :bigint
@@ -40,8 +40,8 @@ class Task < ApplicationRecord
              optional: true,
              inverse_of: :ai_suggested_tasks
 
-  # Validate presence of title
-  validates :title, presence: true
+  # Validate presence of name
+  validates :name, presence: true
 
   # Validate priority agains allowed values
   validates :priority, inclusion: { in: PRIORITIES }
