@@ -30,7 +30,16 @@ require "test_helper"
 #  fk_rails_...  (category_id => categories.id)
 #
 class TaskTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  test "should accept valid priorities" do
+    Task::PRIORITIES.each do |priority|
+      task = Task.new(title: "Sample Task", priority: priority)
+      assert task.valid?, "Expected task with priority #{priority} to be valid"
+    end
+  end
+
+  test "should reject invalid priorities" do
+    task = Task.new(title: "Sample Task", priority: "invalid_priority")
+    assert_not task.valid?
+    assert_includes task.errors[:priority], "is not included in the list"
+  end
 end
