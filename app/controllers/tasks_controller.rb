@@ -54,6 +54,20 @@ class TasksController < ApplicationController
     end
   end
 
+  def toggle_completion
+    @task = Task.find(params[:id])
+    completed_at = @task.completed_at? ? nil : Time.current
+    @task.update!(completed_at: completed_at)
+
+    respond_to do |format|
+      format.turbo_stream do
+        @tasks = Task.all
+        @active_tasks_count = Task.where(completed_at: nil).count
+      end
+      format.html { redirect_to root_path, status: :see_other }
+    end
+  end
+
   private
 
   def task_params
