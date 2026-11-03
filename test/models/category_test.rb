@@ -20,4 +20,13 @@ class CategoryTest < ActiveSupport::TestCase
     assert_not category.save
     assert_includes category.errors[:name], "can't be blank"
   end
+
+  test "should not allow category names with different casing" do
+    Category.create!(name: "Work")
+
+    duplicate_category = Category.new(name: "work")
+
+    assert_not duplicate_category.save
+    assert_includes duplicate_category.errors[:name], "has already been taken"
+  end
 end
