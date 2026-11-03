@@ -9,6 +9,11 @@ class TasksController < ApplicationController
     load_categories
   end
 
+  def edit
+    @task = Task.find(params[:id])
+    load_categories
+  end
+
   def create
     @task = Task.new(task_params)
 
@@ -25,6 +30,26 @@ class TasksController < ApplicationController
       respond_to do |format|
         format.turbo_stream { render :new, formats: [ :html ], status: :unprocessable_entity }
         format.html { render :new, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def update
+    @task = Task.find(params[:id])
+
+    if @task.update(task_params)
+      respond_to do |format|
+        format.turbo_stream do
+          @tasks = Task.all
+          @active_tasks_count = Task.where(completed_at: nil).count
+        end
+        format.html { redirect_to root_path, status: :see_other }
+      end
+    else
+      load_categories
+      respond_to do |format|
+        format.turbo_stream { render :edit, formats: [ :html ], status: :unprocessable_entity }
+        format.html { render :edit, status: :unprocessable_entity }
       end
     end
   end
