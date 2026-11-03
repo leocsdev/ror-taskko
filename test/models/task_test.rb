@@ -68,4 +68,9 @@ class TaskTest < ActiveSupport::TestCase
     assert_not task.valid?
     assert_includes task.errors[:ai_suggested_priority], "is not included in the list"
   end
+
+  test "should accept nil for AI suggested priority" do
+    task = Task.new(title: "Sample Task", ai_suggested_priority: nil)
+    assert task.valid?
+  end
 end
