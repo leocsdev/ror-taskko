@@ -11,7 +11,7 @@ require "test_helper"
 #
 # Indexes
 #
-#  index_categories_on_name  (name) UNIQUE
+#  index_categories_on_lower_name  (lower((name)::text)) UNIQUE
 #
 class CategoryTest < ActiveSupport::TestCase
   # test "the truth" do
