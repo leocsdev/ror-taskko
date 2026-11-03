@@ -8,7 +8,9 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-# Seed default categories 
-["Work", "Learning", "Personal", "Finance", "Health"].each do |category_name|
+# Seed default categories
+default_categories = %w[Work Learning Personal Finance Health]
+
+default_categories.each do |category_name|
   Category.find_or_create_by!(name: category_name)
 end
