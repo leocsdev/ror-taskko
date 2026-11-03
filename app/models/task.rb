@@ -10,8 +10,8 @@
 #  completed_at             :datetime
 #  description              :text
 #  due_at                   :datetime
+#  name                     :string           not null
 #  priority                 :string           default("medium"), not null
-#  title                    :string           not null
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
 #  ai_suggested_category_id :bigint
