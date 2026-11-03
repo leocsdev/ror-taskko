@@ -14,7 +14,10 @@ require "test_helper"
 #  index_categories_on_lower_name  (lower((name)::text)) UNIQUE
 #
 class CategoryTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  test "should not save category without name" do
+    category = Category.new(name: nil)
+    
+    assert_not category.save
+    assert_includes category.errors[:name], "can't be blank"
+  end
 end
