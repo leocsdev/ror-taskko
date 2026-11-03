@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: categories
+#
+#  id         :bigint           not null, primary key
+#  name       :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_categories_on_name  (name) UNIQUE
+#
 class Category < ApplicationRecord
   # When a category is deleted, set the category_id of its tasks to null
   has_many :tasks, dependent: :nullify
