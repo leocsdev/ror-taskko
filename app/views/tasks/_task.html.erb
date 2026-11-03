@@ -1,0 +1,48 @@
+<% completed = task.completed_at.present? %>
+<% due_today = task.due_at.present? && task.due_at.to_date == Time.zone.today %>
+<% overdue = task.due_at.present? && task.due_at.to_date < Time.zone.today && !completed %>
+
+<article class="rounded-xl border p-4 transition-colors sm:p-5 <%= completed ? 'border-slate-200/60 bg-slate-50/70 opacity-80' : 'border-slate-200 bg-white hover:border-slate-300' %>">
+  <div class="flex items-start gap-3.5 sm:gap-4">
+    <span aria-hidden="true" class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border <%= completed ? 'border-indigo-600 bg-indigo-600 text-white' : 'border-slate-300 bg-white text-transparent' %>">
+      <% if completed %>
+        <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
+          <path d="m4 10 4 4 8-8" />
+        </svg>
+      <% end %>
+    </span>
+
+    <div class="min-w-0 flex-1">
+      <h2 class="text-base font-semibold leading-snug tracking-tight <%= completed ? 'text-slate-400 line-through' : 'text-slate-900' %>"><%= task.name %></h2>
+
+      <% if task.description.present? %>
+        <p class="mt-1.5 whitespace-pre-line text-sm leading-relaxed text-slate-600"><%= task.description %></p>
+      <% end %>
+
+      <div class="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-xs text-slate-500">
+        <% if task.category.present? %>
+          <span class="font-medium text-indigo-700"><%= task.category.name %></span>
+        <% end %>
+
+        <% if task.category.present? && task.priority.present? %>
+          <span aria-hidden="true" class="text-slate-300">·</span>
+        <% end %>
+
+        <% priority_class = { "urgent" => "font-semibold text-rose-700", "high" => "font-semibold text-amber-700", "medium" => "font-medium text-sky-700", "low" => "text-slate-600" }.fetch(task.priority, "text-slate-600") %>
+        <span class="<%= priority_class %>"><%= task.priority.humanize %></span>
+
+        <% if task.due_at.present? %>
+          <span aria-hidden="true" class="text-slate-300">·</span>
+          <span class="<%= overdue ? 'font-medium text-rose-700' : due_today ? 'font-medium text-indigo-700' : 'text-slate-500' %>">
+            <%= overdue ? "Overdue · #{task.due_at.to_date.to_fs(:long)}" : due_today ? "Due today" : "Due #{task.due_at.to_date.to_fs(:long)}" %>
+          </span>
+        <% end %>
+
+        <% if completed %>
+          <span aria-hidden="true" class="text-slate-300">·</span>
+          <span>Completed</span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</article>
