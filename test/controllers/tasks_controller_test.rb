@@ -144,4 +144,35 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_equal "text/vnd.turbo-stream.html", response.media_type
   end
+
+  test "should mark an active task as completed" do
+    assert_nil task.completed_at
+    patch toggle_completion_task_url(task)
+
+    task.reload
+
+    assert_not_nil task.completed_at
+    assert_redirected_to root_url
+    assert_response :see_other
+  end
+
+  test "should reopen a completed task" do
+    task.update!(completed_at: Time.current)
+    patch toggle_completion_task_url(task)
+
+    task.reload
+
+    assert_nil task.completed_at
+    assert_redirected_to root_url
+    assert_response :see_other
+  end
+
+  test "should toggle completion via turbo stream" do
+    patch toggle_completion_task_url(task), as: :turbo_stream
+
+    task.reload
+    assert_not_nil task.completed_at
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+  end
 end
