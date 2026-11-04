@@ -86,4 +86,62 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_equal "text/vnd.turbo-stream.html", response.media_type
   end
+
+  test "should update task with valid attributes" do
+    patch task_url(task), params: {
+      task: {
+        name: "Updated Task Title",
+        priority: "urgent"
+      }
+    }
+
+    task.reload
+    assert_equal "Updated Task Title", task.name
+    assert_equal "urgent", task.priority
+    assert_redirected_to root_url
+    assert_response :see_other
+  end
+
+  test "should not update task with invalid attributes" do
+    patch task_url(task), params: {
+      task: {
+        name: ""
+      }
+    }
+
+    task.reload
+
+    assert_equal "Submit report", task.name
+    assert_response :unprocessable_entity
+  end
+
+  test "should update task via turbo stream" do
+    patch task_url(task), params: {
+      task: {
+        name: "Updated via Turbo",
+        priority: "urgent"
+      }
+    }, as: :turbo_stream
+
+    task.reload
+
+    assert_equal "Updated via Turbo", task.name
+    assert_equal "urgent", task.priority
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+  end
+
+  test "should not update task via turbo stream with invalid attributes" do
+    patch task_url(task), params: {
+      task: {
+        name: ""
+      }
+    }, as: :turbo_stream
+
+    task.reload
+
+    assert_equal "Submit report", task.name
+    assert_response :unprocessable_entity
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+  end
 end
