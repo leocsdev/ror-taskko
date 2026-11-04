@@ -175,4 +175,22 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal "text/vnd.turbo-stream.html", response.media_type
   end
+
+  test "should destroy task" do
+    assert_difference("Task.count", -1) do
+      delete task_url(task)
+    end
+
+    assert_redirected_to root_url
+    assert_response :see_other
+  end
+
+  test "should destroy task via turbo stream" do
+    assert_difference("Task.count", -1) do
+      delete task_url(task), as: :turbo_stream
+    end
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+  end
 end
