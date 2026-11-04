@@ -54,4 +54,36 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
   end
+
+  test "should create task via Turbo Stream" do
+    assert_difference("Task.count", 1) do
+      post tasks_url, params: {
+        task: {
+          name: "Buy groceries",
+          description: "Milk, eggs, bread",
+          category_id: category.id,
+          priority: "high"
+        }
+      }, as: :turbo_stream
+    end
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+  end
+
+  test "should not create task via turbo stream with invalid attributes" do
+    assert_no_difference("Task.count") do
+      post tasks_url, params: {
+        task: {
+          name: nil,
+          description: "Milk, eggs, bread",
+          category_id: category.id,
+          priority: "high"
+        }
+      }, as: :turbo_stream
+    end
+
+    assert_response :unprocessable_entity
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+  end
 end
