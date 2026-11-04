@@ -22,4 +22,36 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     get edit_task_url(task)
     assert_response :success
   end
+
+  test "should create task with valid attributes" do
+    assert_difference("Task.count", 1) do
+      post tasks_url, params: {
+        task: {
+          name: "Buy groceries",
+          description: "Milk, eggs, bread",
+          category_id: category.id,
+          priority: "high"
+        }
+      }
+    end
+
+    assert_redirected_to root_url
+    assert_response :see_other
+  end
+
+  test "should not create task with invalid attributes" do
+    assert_difference("Task.count", 0) do
+      post tasks_url,
+           params: {
+             task: {
+               name: nil,
+               description: "Milk, eggs, bread",
+               category_id: category.id,
+               priority: "high"
+             }
+           }
+    end
+
+    assert_response :unprocessable_entity
+  end
 end
