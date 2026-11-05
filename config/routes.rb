@@ -6,4 +6,6 @@ Rails.application.routes.draw do
   resources :tasks, only: %i[new create edit update destroy] do
     patch :toggle_completion, on: :member
   end
+
+  resources :categories, only: %i[index]
 end
