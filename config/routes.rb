@@ -7,5 +7,5 @@ Rails.application.routes.draw do
     patch :toggle_completion, on: :member
   end
 
-  resources :categories, only: %i[index]
+  resources :categories, only: %i[index create]
 end
