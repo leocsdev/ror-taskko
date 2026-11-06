@@ -38,25 +38,6 @@
       <%# Form with Form Body + Sticky Footer %>
       <%= form_with model: task, class: "flex flex-col flex-1 overflow-hidden" do |form| %>
         <div class="flex-1 overflow-y-auto px-6 py-5 space-y-4">
-          <%# Top Error Alert Banner (matching Category error styling) %>
-          <% if task.errors.any? %>
-            <div role="alert" class="rounded-lg border border-rose-200 bg-rose-50/80 p-3 text-xs text-rose-700">
-              <div class="flex items-center gap-1.5 font-semibold text-rose-800">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"/>
-                  <line x1="12" x2="12" y1="8" y2="12"/>
-                  <line x1="12" x2="12.01" y1="16" y2="16"/>
-                </svg>
-                <span><%= pluralize(task.errors.count, "error") %> prevented this task from being saved:</span>
-              </div>
-              <ul class="mt-1.5 list-inside list-disc space-y-0.5 pl-5 text-rose-600">
-                <% task.errors.full_messages.each do |message| %>
-                  <li><%= message %></li>
-                <% end %>
-              </ul>
-            </div>
-          <% end %>
-
           <%# Task Name %>
           <div>
             <%= form.label :name, "Task name", class: "mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-700" %>
