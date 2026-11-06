@@ -1,16 +1,6 @@
 <%# 1. Prepend the new category into the existing list %>
 <%= turbo_stream.prepend "categories_list" do %>
-  <div id="<%= dom_id(@category) %>" class="flex items-center justify-between px-4 py-3 hover:bg-slate-50/70 transition-colors">
-    <div class="flex items-center gap-2.5 min-w-0">
-      <span class="h-2.5 w-2.5 rounded-full shrink-0 bg-indigo-500"></span>
-      <span class="text-sm font-medium text-slate-800 truncate">
-        <%= @category.name %>
-      </span>
-      <span class="text-xs text-slate-400 font-mono tabular-nums">
-        (0 tasks)
-      </span>
-    </div>
-  </div>
+  <%= render @category %>
 <% end %>
 
 <%# 2. Reset the form back to blank %>

@@ -1,0 +1,25 @@
+<%= turbo_frame_tag dom_id(category) do %>
+  <div class="flex items-center justify-between px-4 py-3 hover:bg-slate-50/70 transition-colors">
+    <div class="flex items-center gap-2.5 min-w-0">
+      <span class="h-2.5 w-2.5 rounded-full shrink-0 bg-indigo-500"></span>
+      <span class="text-sm font-medium text-slate-800 truncate">
+        <%= category.name %>
+      </span>
+      <span class="text-xs text-slate-400 font-mono tabular-nums">
+        (<%= pluralize(category.tasks.count, 'task') %>)
+      </span>
+    </div>
+
+    <div class="flex items-center gap-1 shrink-0">
+      <%# Edit button linking to edit_category_path inside the row frame %>
+      <%= link_to edit_category_path(category),
+            aria: { label: "Edit category #{category.name}" },
+            class: "rounded-md p-1.5 text-slate-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+          <path d="m15 5 4 4"/>
+        </svg>
+      <% end %>
+    </div>
+  </div>
+<% end %>
