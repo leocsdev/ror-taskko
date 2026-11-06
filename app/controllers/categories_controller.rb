@@ -35,10 +35,12 @@ class CategoriesController < ApplicationController
         format.html { redirect_to categories_path }
       end
     else
-      respond_to do |format|
-        format.turbo_stream { render :edit, status: :unprocessable_entity }
-        format.html { render :edit, status: :unprocessable_entity }
-      end
+      # respond_to do |format|
+      #   format.turbo_stream { render :edit, formats: [ :html ], status: :unprocessable_entity }
+      #   format.html { render :edit, status: :unprocessable_entity }
+      # end
+      # Let Rails return standard HTML for the Turbo Frame to swap in
+      render :edit, status: :unprocessable_entity
     end
   end
 
