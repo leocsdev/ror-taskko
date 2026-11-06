@@ -75,4 +75,34 @@ class CategoriesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "text/vnd.turbo-stream.html", response.media_type
     assert_includes response.body, "has already been taken"
   end
+
+  # 5. PATCH /categories/:id (HTML & Turbo Stream)
+  test "should update category with valid attributes via HTML" do
+    patch category_url(@category), params: {
+      category: { name: "Career" }
+    }
+
+    assert_redirected_to categories_url
+    assert_response :see_other
+    assert_equal "Career", @category.reload.name
+  end
+
+  test "should not update category with invalid attributes" do
+    patch category_url(@category), params: {
+      category: { name: "" }
+    }
+
+    assert_response :unprocessable_entity
+    assert_equal "Work", @category.reload.name
+  end
+
+  test "should update category via Turbo Stream" do
+    patch category_url(@category), params: {
+      category: { name: "Career" }
+    }, as: :turbo_stream
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+    assert_equal "Career", @category.reload.name
+  end
 end
