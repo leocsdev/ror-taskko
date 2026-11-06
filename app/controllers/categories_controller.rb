@@ -13,7 +13,7 @@ class CategoriesController < ApplicationController
     if @category.save
       respond_to do |format|
         format.turbo_stream
-        format.html { redirect_to categories_path }
+        format.html { redirect_to categories_path, status: :see_other }
       end
     else
       categories_with_count
@@ -35,7 +35,7 @@ class CategoriesController < ApplicationController
     if @category.update(category_params)
       respond_to do |format|
         format.turbo_stream
-        format.html { redirect_to categories_path }
+        format.html { redirect_to categories_path, status: :see_other }
       end
     else
       render :edit, status: :unprocessable_entity
@@ -46,7 +46,7 @@ class CategoriesController < ApplicationController
     @category.destroy!
     respond_to do |format|
       format.turbo_stream
-      format.html { redirect_to categories_path, notice: "Category deleted." }
+      format.html { redirect_to categories_path, status: :see_other, notice: "Category deleted." }
     end
   end
 
