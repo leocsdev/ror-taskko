@@ -1,2 +1,4 @@
 <%= turbo_stream.replace "tasks_list", partial: "tasks/tasks_list", locals: { tasks: @tasks } %>
+<%= turbo_stream.update "header_active_tasks_count", @active_tasks_count %>
 <%= turbo_stream.update "active_tasks_count", @active_tasks_count %>
+<%= turbo_stream.update "completed_tasks_count", @completed_tasks_count %>
