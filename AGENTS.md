@@ -341,6 +341,25 @@ The developer's intended workflow is:
 - If context is missing or conflicting, state what is unknown and ask
   a focused question rather than inventing a decision.
 
+### Vertical-Slice Feature Implementation Workflow
+
+When developing UI and CRUD features, implement work incrementally in thin vertical slices starting from the UI down to the Hotwire/Rails responses:
+
+1. **UI Trigger / Entry Point First:**
+   - Build the user-facing button, link, or trigger based on the design specification (Tailwind styling, icons, ARIA accessibility attributes).
+   - Target the appropriate Turbo Frame (e.g., `data: { turbo_frame: "modal" }` or row-level `dom_id(record)`).
+2. **Minimal Route:**
+   - Add only the specific RESTful route required for that single slice in `config/routes.rb`.
+3. **Focused Controller Action:**
+   - Implement the controller action with simple queries first.
+4. **View / Hotwire Response:**
+   - Build the corresponding view template, partial, or Turbo Stream response.
+   - For inline Turbo Frame forms inside flexbox layouts, wrap inputs in a `flex-1` wrapper (`min-w-0`) to prevent Rails' default `.field_with_errors` wrapper from collapsing the input on 422 validation failure.
+5. **Iterate Per Action:**
+   - Repeat this slice sequence for each action in the feature (e.g., `index` -> `create` -> `edit`/`update` -> `destroy`).
+6. **Refactor and Test Last:**
+   - Once all vertical slices are working and verified in the browser, optimize queries (e.g. eager-loading or `left_joins` to prevent N+1 queries) and write automated controller and request tests.
+
 These are collaboration instructions, not a substitute for tool-level
 permissions or operating-system access controls. Respect the actual
 permissions configured in the coding environment.
