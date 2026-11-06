@@ -24,4 +24,15 @@ class Category < ApplicationRecord
 
   # Validate case-insensitive uniqueness of name
   validates :name, presence: true, uniqueness: { case_sensitive: false }
+
+  scope :with_tasks_count, -> {
+    left_joins(:tasks)
+      .select("categories.*, COUNT(tasks.id) AS tasks_count")
+      .group("categories.id")
+  }
+
+  # Return preloaded tasks_count if available from query, or fall back to SQL count
+  def tasks_count
+    self[:tasks_count]&.to_i || tasks.count
+  end
 end

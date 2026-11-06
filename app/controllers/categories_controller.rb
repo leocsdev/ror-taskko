@@ -2,7 +2,8 @@ class CategoriesController < ApplicationController
   before_action :set_category, only: %i[show edit update destroy]
 
   def index
-    @categories = Category.all
+    categories_with_count
+
     @category = Category.new
   end
 
@@ -15,7 +16,8 @@ class CategoriesController < ApplicationController
         format.html { redirect_to categories_path }
       end
     else
-      @categories = Category.all
+      categories_with_count
+
       respond_to do |format|
         format.turbo_stream { render :new, status: :unprocessable_entity }
         format.html { render :index, status: :unprocessable_entity }
@@ -36,11 +38,6 @@ class CategoriesController < ApplicationController
         format.html { redirect_to categories_path }
       end
     else
-      # respond_to do |format|
-      #   format.turbo_stream { render :edit, formats: [ :html ], status: :unprocessable_entity }
-      #   format.html { render :edit, status: :unprocessable_entity }
-      # end
-      # Let Rails return standard HTML for the Turbo Frame to swap in
       render :edit, status: :unprocessable_entity
     end
   end
@@ -61,5 +58,9 @@ class CategoriesController < ApplicationController
 
   def set_category
     @category = Category.find(params[:id])
+  end
+
+  def categories_with_count
+    @categories = Category.with_tasks_count.order(:name)
   end
 end
