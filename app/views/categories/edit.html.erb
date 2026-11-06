@@ -1,0 +1,36 @@
+<%= turbo_frame_tag dom_id(@category) do %>
+  <div class="p-3.5 bg-indigo-50/40 space-y-2">
+    <%= form_with model: @category, class: "flex items-center gap-2" do |form| %>
+      <%# 1. flex-1 wrapper protects the input from field_with_errors flex collapse %>
+      <div class="flex-1 min-w-0">
+        <%= form.text_field :name,
+              autofocus: true,
+              class: "w-full rounded-lg border #{ @category.errors.any? ? 'border-rose-400 focus:border-rose-600 focus:ring-rose-500/20' : 'border-slate-300 focus:border-indigo-600 focus:ring-indigo-500/20' } bg-white px-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-2" %>
+      </div>
+
+      <%= form.button type: :submit,
+            class: "inline-flex items-center gap-1 rounded-md bg-indigo-600 px-2.5 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-indigo-700 shrink-0" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        <span>Save</span>
+      <% end %>
+
+      <%= link_to "Cancel",
+            category_path(@category),
+            class: "rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-800 shrink-0" %>
+    <% end %>
+
+    <%# 2. Error message with alert icon %>
+    <% if @category.errors.any? %>
+      <p class="flex items-center gap-1 text-xs font-medium text-rose-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" x2="12" y1="8" y2="12"/>
+          <line x1="12" x2="12.01" y1="16" y2="16"/>
+        </svg>
+        <span><%= @category.errors.full_messages.to_sentence %></span>
+      </p>
+    <% end %>
+  </div>
+<% end %>

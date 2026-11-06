@@ -1,0 +1,4 @@
+<%# Replace the edit form back with the normal category row %>
+<%= turbo_stream.replace dom_id(@category) do %>
+  <%= render @category %>
+<% end %>
