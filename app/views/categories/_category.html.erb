@@ -6,7 +6,7 @@
         <%= category.name %>
       </span>
       <span class="text-xs text-slate-400 font-mono tabular-nums">
-        (<%= pluralize(category.tasks.count, 'task') %>)
+        (<%= pluralize(category.tasks_count, 'task') %>)
       </span>
     </div>
 
@@ -24,7 +24,7 @@
       <%= button_to category_path(category),
             method: :delete,
             data: {
-              turbo_confirm: "Delete category \"#{category.name}\"? #{pluralize(category.tasks.count, 'task')} assigned to this category will become uncategorized."
+              turbo_confirm: "Delete category \"#{category.name}\"? #{pluralize(category.tasks_count, 'task')} assigned to this category will become uncategorized."
             },
             aria: { label: "Delete category #{category.name}" },
             class: "rounded-md p-1.5 text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500" do %>
