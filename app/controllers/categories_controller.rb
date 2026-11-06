@@ -1,5 +1,5 @@
 class CategoriesController < ApplicationController
-  before_action :set_category, only: %i[show edit update]
+  before_action :set_category, only: %i[show edit update destroy]
 
   def index
     @categories = Category.all
@@ -28,6 +28,7 @@ class CategoriesController < ApplicationController
 
   def edit
   end
+
   def update
     if @category.update(category_params)
       respond_to do |format|
@@ -41,6 +42,14 @@ class CategoriesController < ApplicationController
       # end
       # Let Rails return standard HTML for the Turbo Frame to swap in
       render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    @category.destroy!
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to categories_path, notice: "Category deleted." }
     end
   end
 
