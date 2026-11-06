@@ -77,7 +77,12 @@ class TasksController < ApplicationController
   end
 
   def load_tasks
-    @tasks = Task.includes(:category).ordered
+    @total_tasks_count = Task.count
     @active_tasks_count = Task.active.count
+    @completed_tasks_count = Task.completed.count
+
+    @tasks = Task.includes(:category)
+                 .by_status(params[:status])
+                 .ordered
   end
 end
