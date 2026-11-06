@@ -48,4 +48,34 @@ class CategoryTest < ActiveSupport::TestCase
     assert_nil task.category
     assert_nil task.ai_suggested_category
   end
+
+  test "with_tasks_count scope computes tasks count accurately" do
+    work = Category.create!(name: "Work")
+    personal = Category.create!(name: "Personal")
+    # Category with no tasks
+    Category.create!(name: "Chores")
+
+    Task.create!(name: "Task 1", category: work)
+    Task.create!(name: "Task 2", category: work)
+    Task.create!(name: "Task 3", category: personal)
+
+    categories = Category.with_tasks_count.index_by(&:name)
+
+    assert_equal 2, categories["Work"].tasks_count
+    assert_equal 1, categories["Personal"].tasks_count
+    assert_equal 0, categories["Chores"].tasks_count
+  end
+
+  test "tasks_count falls back to database count when un-aggregated" do
+    category = Category.create!(name: "Health")
+    Task.create!(name: "Run 5k", category: category)
+
+    # Calling on a standard find (without with_tasks_count) uses fallback
+    found_category = Category.find(category.id)
+    assert_equal 1, found_category.tasks_count
+
+    # Brand new unsaved record
+    new_category = Category.new(name: "Fitness")
+    assert_equal 0, new_category.tasks_count
+  end
 end
