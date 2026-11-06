@@ -48,6 +48,10 @@ class Task < ApplicationRecord
     category_id.present? ? where(category_id: category_id) : all
   }
 
+  scope :by_priority, ->(priority) {
+    priority.present? && PRIORITIES.include?(priority) ? where(priority: priority) : all
+  }
+
   # A task can exist without being assigned to a category
   belongs_to :category, optional: true
 

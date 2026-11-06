@@ -82,8 +82,9 @@ class TasksController < ApplicationController
     @completed_tasks_count = Task.completed.count
 
     @tasks = Task.includes(:category)
-              .by_status(params[:status])
-              .by_category(params[:category_id])
-              .ordered
+                .by_status(params[:status])
+                .by_category(params[:category_id])
+                .by_priority(params[:priority])
+                .ordered
   end
 end
