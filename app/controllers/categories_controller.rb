@@ -1,5 +1,5 @@
 class CategoriesController < ApplicationController
-  before_action :set_category, only: %i[edit update]
+  before_action :set_category, only: %i[show edit update]
 
   def index
     @categories = Category.all
@@ -21,6 +21,9 @@ class CategoriesController < ApplicationController
         format.html { render :index, status: :unprocessable_entity }
       end
     end
+  end
+
+  def show
   end
 
   def edit
