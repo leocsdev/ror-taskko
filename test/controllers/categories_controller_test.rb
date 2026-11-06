@@ -21,4 +21,12 @@ class CategoriesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, @category.name
   end
+
+  # 3. GET /categories/:id/edit
+  test "should get edit" do
+    get edit_category_url(@category)
+
+    assert_response :success
+    assert_select "turbo-frame##{dom_id(@category)}"
+  end
 end
