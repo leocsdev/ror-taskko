@@ -48,8 +48,9 @@ class TasksController < ApplicationController
       end
     else
       load_categories
+
       respond_to do |format|
-        format.turbo_stream { render :edit, formats: [ :html ], status: :unprocessable_entity }
+        format.turbo_stream { render :edit, status: :unprocessable_entity }
         format.html { render :edit, status: :unprocessable_entity }
       end
     end
