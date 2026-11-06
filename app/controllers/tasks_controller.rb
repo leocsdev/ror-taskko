@@ -1,17 +1,16 @@
 class TasksController < ApplicationController
+  before_action :set_task, only: %i[edit update toggle_completion destroy]
+  before_action :load_categories, only: %i[new edit create update]
+
   def index
-    @tasks = Task.all
-    @active_tasks_count = Task.where(completed_at: nil).count
+    load_tasks
   end
 
   def new
     @task = Task.new
-    load_categories
   end
 
   def edit
-    @task = Task.find(params[:id])
-    load_categories
   end
 
   def create
@@ -19,15 +18,10 @@ class TasksController < ApplicationController
 
     if @task.save
       respond_to do |format|
-        format.turbo_stream do
-          @tasks = Task.all
-          @active_tasks_count = Task.where(completed_at: nil).count
-        end
+        format.turbo_stream { load_tasks }
         format.html { redirect_to root_path, status: :see_other }
       end
     else
-      load_categories
-
       respond_to do |format|
         format.turbo_stream { render :new, status: :unprocessable_entity }
         format.html { render :new, status: :unprocessable_entity }
@@ -36,19 +30,12 @@ class TasksController < ApplicationController
   end
 
   def update
-    @task = Task.find(params[:id])
-
     if @task.update(task_params)
       respond_to do |format|
-        format.turbo_stream do
-          @tasks = Task.all
-          @active_tasks_count = Task.where(completed_at: nil).count
-        end
+        format.turbo_stream { load_tasks }
         format.html { redirect_to root_path, status: :see_other }
       end
     else
-      load_categories
-
       respond_to do |format|
         format.turbo_stream { render :edit, status: :unprocessable_entity }
         format.html { render :edit, status: :unprocessable_entity }
@@ -57,33 +44,29 @@ class TasksController < ApplicationController
   end
 
   def toggle_completion
-    @task = Task.find(params[:id])
-    completed_at = @task.completed_at? ? nil : Time.current
+    completed_at = @task.completed? ? nil : Time.current
     @task.update!(completed_at: completed_at)
 
     respond_to do |format|
-      format.turbo_stream do
-        @tasks = Task.all
-        @active_tasks_count = Task.where(completed_at: nil).count
-      end
+      format.turbo_stream { load_tasks }
       format.html { redirect_to root_path, status: :see_other }
     end
   end
 
   def destroy
-    @task = Task.find(params[:id])
     @task.destroy!
 
     respond_to do |format|
-      format.turbo_stream do
-        @tasks = Task.all
-        @active_tasks_count = Task.where(completed_at: nil).count
-      end
+      format.turbo_stream { load_tasks }
       format.html { redirect_to root_path, status: :see_other }
     end
   end
 
   private
+
+  def set_task
+    @task = Task.find(params[:id])
+  end
 
   def task_params
     params.require(:task).permit(:name, :description, :category_id, :priority, :due_at)
@@ -91,5 +74,10 @@ class TasksController < ApplicationController
 
   def load_categories
     @categories = Category.order(:name)
+  end
+
+  def load_tasks
+    @tasks = Task.includes(:category).ordered
+    @active_tasks_count = Task.active.count
   end
 end
