@@ -4,7 +4,7 @@
 
 <article id="<%= dom_id(task) %>" class="rounded-xl border p-4 transition-colors sm:p-5 <%= completed ? 'border-slate-200/60 bg-slate-50/70 opacity-80' : 'border-slate-200 bg-white hover:border-slate-300' %>">
   <div class="flex items-start gap-3.5 sm:gap-4">
-    <%= button_to toggle_completion_task_path(task, status: params[:status]),
+    <%= button_to toggle_completion_task_path(task, status: params[:status], view: @current_view),
           method: :patch,
           aria: { label: completed ? "Reopen #{task.name}" : "Complete #{task.name}", pressed: completed },
           form: { class: "shrink-0" },
@@ -18,7 +18,14 @@
 
     <div class="min-w-0 flex-1">
       <div class="flex items-start justify-between gap-3">
-        <h2 class="text-base font-semibold leading-snug tracking-tight <%= completed ? 'text-slate-400 line-through' : 'text-slate-900' %>"><%= task.name %></h2>
+        <div class="flex flex-wrap items-center gap-2">
+          <h2 class="text-base font-semibold leading-snug tracking-tight <%= completed ? 'text-slate-400 line-through' : 'text-slate-900' %>"><%= task.name %></h2>
+          <% if task.ranking_reason.present? %>
+            <span class="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold <%= overdue ? 'bg-rose-50 text-rose-700 border border-rose-200' : due_today ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-indigo-50 text-indigo-700 border border-indigo-100' %>">
+              <%= task.ranking_reason %>
+            </span>
+          <% end %>
+        </div>
 
         <div class="flex shrink-0 items-center gap-1">
           <%# Edit button %>
@@ -33,7 +40,7 @@
           <% end %>
 
           <%# Delete button %>
-          <%= button_to task_path(task),
+          <%= button_to task_path(task, status: params[:status], view: @current_view),
                 method: :delete,
                 data: { turbo_confirm: "Delete task \"#{task.name}\"?" },
                 aria: { label: "Delete task #{task.name}" },

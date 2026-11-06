@@ -81,10 +81,22 @@ class TasksController < ApplicationController
     @active_tasks_count = Task.active.count
     @completed_tasks_count = Task.completed.count
 
-    @tasks = Task.includes(:category)
-                .by_status(params[:status])
-                .by_category(params[:category_id])
-                .by_priority(params[:priority])
-                .ordered
+    @current_view = if params[:view] == "all" || (params[:view] != "today" && (params[:category_id].present? || params[:priority].present? || (params[:status].present? && params[:status] != "all")))
+      "all"
+    else
+      params[:view].presence_in(%w[today all]) || "today"
+    end
+
+    if @current_view == "today"
+      active_tasks = Task.active.includes(:category)
+      active_tasks = active_tasks.by_category(params[:category_id]) if params[:category_id].present?
+      @tasks = TaskPriorityScorer.rank(active_tasks)
+    else
+      @tasks = Task.includes(:category)
+                  .by_status(params[:status])
+                  .by_category(params[:category_id])
+                  .by_priority(params[:priority])
+                  .ordered
+    end
   end
 end

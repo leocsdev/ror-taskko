@@ -14,11 +14,13 @@
       </div>
 
       <h2 class="text-sm font-semibold text-slate-900">
-        <%= has_filters ? "No tasks found" : "No tasks yet" %>
+        <%= @current_view == "today" ? "All caught up for today" : (has_filters ? "No tasks found" : "No tasks yet") %>
       </h2>
 
       <p class="mx-auto mt-1 max-w-sm text-xs text-slate-500">
-        <% if params[:status] == "completed" %>
+        <% if @current_view == "today" %>
+          You have no active tasks requiring immediate attention. Enjoy your day or add a new task.
+        <% elsif params[:status] == "completed" %>
           You have not completed any tasks in this view yet.
         <% elsif params[:status] == "active" %>
           You don't have any active tasks right now.
@@ -39,8 +41,14 @@
           <span>Add Task</span>
         <% end %>
 
-        <% if has_filters %>
-          <%= link_to root_path,
+        <% if @current_view == "today" && @total_tasks_count.to_i > 0 %>
+          <%= link_to root_path(view: "all"),
+                data: { turbo_frame: "tasks_content", turbo_action: "advance" },
+                class: "inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-3.5 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-200" do %>
+            <span>View all tasks (<%= @total_tasks_count %>)</span>
+          <% end %>
+        <% elsif has_filters %>
+          <%= link_to root_path(view: "all"),
                 data: { turbo_frame: "tasks_content", turbo_action: "advance" },
                 class: "inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-3.5 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-200" do %>
             <span>Clear filters</span>
