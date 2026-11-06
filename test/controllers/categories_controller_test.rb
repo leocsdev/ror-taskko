@@ -105,4 +105,25 @@ class CategoriesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "text/vnd.turbo-stream.html", response.media_type
     assert_equal "Career", @category.reload.name
   end
+
+  # 6. DELETE /categories/:id (destroy & task nullification)
+  test "should destroy category and nullify associated tasks via HTML" do
+    task = Task.create!(name: "Assigned Task", category: @category)
+    assert_difference("Category.count", -1) do
+      delete category_url(@category)
+    end
+
+    assert_redirected_to categories_url
+    assert_response :see_other
+    assert_nil task.reload.category_id
+  end
+
+  test "should destroy category via Turbo Stream" do
+    assert_difference("Category.count", -1) do
+      delete category_url(@category), as: :turbo_stream
+    end
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+  end
 end
