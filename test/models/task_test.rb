@@ -85,4 +85,48 @@ class TaskTest < ActiveSupport::TestCase
 
     assert task.valid?
   end
+
+  test "scope ordered returns tasks with newest created first" do
+    task_old = Task.create!(name: "Old task", priority: "medium", created_at: 2.days.ago)
+    task_new = Task.create!(name: "New task", priority: "high", created_at: 1.day.ago)
+
+    ordered_tasks = Task.where(id: [ task_old.id, task_new.id ]).ordered
+    assert_equal [ task_new, task_old ], ordered_tasks.to_a
+  end
+
+  test "scopes active and completed filter by completion state" do
+    active_task = Task.create!(name: "Active task", priority: "medium", completed_at: nil)
+    completed_task = Task.create!(name: "Completed task", priority: "low", completed_at: Time.current)
+
+    assert_includes Task.active, active_task
+    assert_not_includes Task.active, completed_task
+
+    assert_includes Task.completed, completed_task
+    assert_not_includes Task.completed, active_task
+  end
+
+  test "completed? returns true only when completed_at is present" do
+    task = Task.new(name: "Test", priority: "medium")
+    assert_not task.completed?
+
+    task.completed_at = Time.current
+    assert task.completed?
+  end
+
+  test "due_today? returns true when due date is today" do
+    task = Task.new(name: "Test", priority: "medium", due_at: Time.zone.now.beginning_of_day + 14.hours)
+    assert task.due_today?
+
+    task.due_at = 1.day.from_now
+    assert_not task.due_today?
+  end
+
+  test "overdue? returns true when due date is in the past and task is active" do
+    task = Task.new(name: "Test", priority: "medium", due_at: 2.days.ago)
+    assert task.overdue?
+
+    # When marked completed, it is no longer considered overdue
+    task.completed_at = Time.current
+    assert_not task.overdue?
+  end
 end

@@ -17,19 +17,26 @@
         </span>
       </div>
       <p class="mt-1 text-xs text-slate-500 sm:text-sm">Keep track of daily priorities and pending work.</p>
+    </div>
 
-      <%= link_to categories_path, data: { turbo_frame: "modal" }, class: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 shadow-xs transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" do %>
+    <div class="flex items-center gap-2.5 shrink-0">
+      <%= link_to categories_path,
+            data: { turbo_frame: "modal" },
+            class: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 shadow-xs transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" do %>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/>
           <circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>
         </svg>
         <span>Categories</span>
       <% end %>
+
+      <%= link_to new_task_path,
+            data: { turbo_frame: "modal" },
+            class: "inline-flex items-center justify-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-xs transition-colors hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2" do %>
+        <span aria-hidden="true" class="text-base leading-none">+</span>
+        <span>Add Task</span>
+      <% end %>
     </div>
-    <%= link_to new_task_path, data: { turbo_frame: "modal" }, class: "inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2" do %>
-      <span aria-hidden="true" class="text-lg leading-none">+</span>
-      <span>Add Task</span>
-    <% end %>
   </div>
 
   <%= render "tasks_list", tasks: @tasks %>

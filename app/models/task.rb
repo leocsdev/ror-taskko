@@ -31,6 +31,11 @@ class Task < ApplicationRecord
   PRIORITIES = %w[low medium high urgent].freeze
   AI_STATUSES = %w[not_requested pending completed failed].freeze
 
+  # Scopes
+  scope :ordered, -> { order(created_at: :desc) }
+  scope :active, -> { where(completed_at: nil) }
+  scope :completed, -> { where.not(completed_at: nil) }
+
   # A task can exist without being assigned to a category
   belongs_to :category, optional: true
 
@@ -43,7 +48,7 @@ class Task < ApplicationRecord
   # Validate presence of name
   validates :name, presence: true
 
-  # Validate priority agains allowed values
+  # Validate priority against allowed values
   validates :priority, inclusion: { in: PRIORITIES }
 
   # Validate AI status against allowed values
@@ -53,4 +58,17 @@ class Task < ApplicationRecord
   validates :ai_suggested_priority,
             inclusion: { in: PRIORITIES },
             allow_nil: true
+
+  # Domain predicates
+  def completed?
+    completed_at.present?
+  end
+
+  def due_today?
+    due_at.present? && due_at.to_date == Time.zone.today
+  end
+
+  def overdue?
+    due_at.present? && due_at.to_date < Time.zone.today && !completed?
+  end
 end
