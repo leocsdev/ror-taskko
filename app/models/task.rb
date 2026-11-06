@@ -44,6 +44,10 @@ class Task < ApplicationRecord
     end
   }
 
+  scope :by_category, ->(category_id) {
+    category_id.present? ? where(category_id: category_id) : all
+  }
+
   # A task can exist without being assigned to a category
   belongs_to :category, optional: true
 

@@ -1,6 +1,6 @@
 class TasksController < ApplicationController
   before_action :set_task, only: %i[edit update toggle_completion destroy]
-  before_action :load_categories, only: %i[new edit create update]
+  before_action :load_categories, only: %i[index new edit create update]
 
   def index
     load_tasks
@@ -82,7 +82,8 @@ class TasksController < ApplicationController
     @completed_tasks_count = Task.completed.count
 
     @tasks = Task.includes(:category)
-                 .by_status(params[:status])
-                 .ordered
+              .by_status(params[:status])
+              .by_category(params[:category_id])
+              .ordered
   end
 end
