@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   root "tasks#index"
 
-  resources :tasks, only: %i[new create edit update destroy] do
+  resources :tasks, only: %i[index new create edit update destroy] do
     patch :toggle_completion, on: :member
   end
 

@@ -4,25 +4,11 @@
       <span class="text-xl font-bold tracking-tight text-slate-900">Task<span class="text-indigo-600">ko</span>.</span>
       <span class="hidden border-l border-slate-200 pl-3 text-xs text-slate-400 md:inline-block">Your tasks. Your priorities. Your day.</span>
     </div>
-  </div>
-</header>
 
-<section class="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-10">
-  <div class="flex flex-col justify-between gap-4 border-b border-slate-200/90 pb-5 sm:flex-row sm:items-end sm:pb-6">
-    <div>
-      <div class="flex items-center gap-2">
-        <h1 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">My Tasks</h1>
-        <span class="inline-flex items-center rounded-full border border-indigo-100 bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-700">
-          <span id="active_tasks_count"><%= @active_tasks_count %></span>
-        </span>
-      </div>
-      <p class="mt-1 text-xs text-slate-500 sm:text-sm">Keep track of daily priorities and pending work.</p>
-    </div>
-
-    <div class="flex items-center gap-2.5 shrink-0">
+    <div class="flex items-center gap-2">
       <%= link_to categories_path,
-            data: { turbo_frame: "modal" },
-            class: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 shadow-xs transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" do %>
+          data: { turbo_frame: "modal" },
+          class: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 shadow-xs transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" do %>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/>
           <circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>
@@ -38,10 +24,109 @@
       <% end %>
     </div>
   </div>
+</header>
 
-  <%= render "tasks_list", tasks: @tasks %>
+<section class="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-10">
+  <%= turbo_frame_tag "tasks_content" do %>
+    <div class="flex flex-col justify-between gap-4 border-b border-slate-200/90 pb-5 sm:flex-row sm:items-end sm:pb-6">
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">My Tasks</h1>
+          <span class="inline-flex items-center rounded-full border border-indigo-100 bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-700">
+            <span id="header_active_tasks_count"><%= @active_tasks_count %></span>
+          </span>
+        </div>
+        <p class="mt-1 text-xs text-slate-500 sm:text-sm">Keep track of daily priorities and pending work.</p>
+      </div>
 
-  <%= render "task_summary", tasks: @tasks %>
+      <div class="flex items-center gap-2.5 shrink-0">
+        <% current_status = params[:status].presence_in(%w[all active completed]) || "all" %>
+
+        <nav aria-label="Task status filter" class="flex items-center gap-1 p-1 bg-slate-100 rounded-lg border border-slate-200/60 self-start sm:self-auto">
+          <%= link_to root_path(status: "all", category_id: params[:category_id], priority: params[:priority]),
+                class: "px-3 py-1.5 text-xs font-medium rounded-md transition-colors #{current_status == 'all' ? 'bg-white text-slate-900 shadow-xs font-semibold' : 'text-slate-600 hover:text-slate-900'}",
+                aria: { current: (current_status == "all" ? "page" : nil) },
+                data: { turbo_frame: "tasks_content", turbo_action: "advance" } do %>
+            All (<span id="total_tasks_count"><%= @total_tasks_count || @tasks.size %></span>)
+          <% end %>
+
+          <%= link_to root_path(status: "active", category_id: params[:category_id], priority: params[:priority]),
+                class: "px-3 py-1.5 text-xs font-medium rounded-md transition-colors #{current_status == 'active' ? 'bg-white text-slate-900 shadow-xs font-semibold' : 'text-slate-600 hover:text-slate-900'}",
+                aria: { current: (current_status == "active" ? "page" : nil) },
+                data: { turbo_frame: "tasks_content", turbo_action: "advance" } do %>
+            Active (<span id="active_tasks_count"><%= @active_tasks_count %></span>)
+          <% end %>
+
+          <%= link_to root_path(status: "completed", category_id: params[:category_id], priority: params[:priority]),
+                class: "px-3 py-1.5 text-xs font-medium rounded-md transition-colors #{current_status == 'completed' ? 'bg-white text-slate-900 shadow-xs font-semibold' : 'text-slate-600 hover:text-slate-900'}",
+                aria: { current: (current_status == "completed" ? "page" : nil) },
+                data: { turbo_frame: "tasks_content", turbo_action: "advance" } do %>
+            Done (<span id="completed_tasks_count"><%= @completed_tasks_count || 0 %></span>)
+          <% end %>
+        </nav>
+      </div>
+    </div>
+
+    <% current_category_id = params[:category_id].presence %>
+
+    <div class="py-3 flex items-center justify-between text-xs gap-2 border-b border-slate-100">
+      <p class="text-slate-400 font-medium mr-1 shrink-0">Category:</span>
+      <div class="flex items-center gap-1.5 overflow-x-auto scrollbar-none flex-1 py-0.5">
+        <%= link_to root_path(status: params[:status], category_id: nil, priority: params[:priority]),
+              class: "px-2.5 py-1 rounded-md font-medium transition-colors shrink-0 #{current_category_id.blank? ? 'bg-slate-900 text-white' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'}",
+              aria: { current: (current_category_id.blank? ? "page" : nil) },
+              data: { turbo_frame: "tasks_content", turbo_action: "advance" } do %>
+          All
+        <% end %>
+
+        <% @categories.each do |cat| %>
+          <% is_selected = current_category_id == cat.id.to_s %>
+          <%= link_to root_path(status: params[:status], category_id: cat.id, priority: params[:priority]),
+                class: "px-2.5 py-1 rounded-md font-medium transition-colors shrink-0 #{is_selected ? 'bg-slate-900 text-white' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'}",
+                aria: { current: (is_selected ? "page" : nil) },
+                data: { turbo_frame: "tasks_content", turbo_action: "advance" } do %>
+            <%= cat.name %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <% current_priority = params[:priority].presence_in(Task::PRIORITIES) %>
+
+    <div class="py-2.5 flex items-center justify-between gap-2 border-b border-slate-100 mb-4">
+      <div class="flex items-center gap-1.5 overflow-x-auto text-xs scrollbar-none flex-1 py-0.5">
+        <span class="text-slate-400 font-medium mr-1 shrink-0">Priority:</span>
+
+        <%= link_to root_path(status: params[:status], category_id: params[:category_id], priority: nil),
+              class: "px-2.5 py-1 rounded-md font-medium transition-colors shrink-0 #{current_priority.blank? ? 'bg-slate-900 text-white' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'}",
+              aria: { current: (current_priority.blank? ? "page" : nil) },
+              data: { turbo_frame: "tasks_content", turbo_action: "advance" } do %>
+          All
+        <% end %>
+
+        <% Task::PRIORITIES.each do |p| %>
+          <% is_selected = current_priority == p %>
+          <%= link_to root_path(status: params[:status], category_id: params[:category_id], priority: p),
+                class: "px-2.5 py-1 rounded-md font-medium transition-colors shrink-0 #{is_selected ? 'bg-slate-900 text-white' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'}",
+                aria: { current: (is_selected ? "page" : nil) },
+                data: { turbo_frame: "tasks_content", turbo_action: "advance" } do %>
+            <%= p.humanize %>
+          <% end %>
+        <% end %>
+      </div>
+
+      <% if params[:category_id].present? || params[:priority].present? || (params[:status].present? && params[:status] != "all") %>
+        <%= link_to root_path,
+              class: "text-xs font-medium text-slate-500 hover:text-slate-800 transition-colors shrink-0",
+              data: { turbo_frame: "tasks_content", turbo_action: "advance" } do %>
+          Clear filters
+        <% end %>
+      <% end %>
+    </div>
+
+    <%= render "tasks_list", tasks: @tasks %>
+    <%= render "task_summary", tasks: @tasks %>
+  <% end %>
 </section>
 
 <%= turbo_frame_tag "modal" %>

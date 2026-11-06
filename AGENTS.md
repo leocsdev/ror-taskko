@@ -1,11 +1,11 @@
-# TaskKo --- Project Instructions
+# Taskko --- Project Instructions
 
 These instructions apply to AI coding assistants working in this
 repository, including GitHub Copilot and OpenCode.
 
 ## 1. Project Overview
 
-**TaskKo** is a lightweight, personal AI-assisted task manager. The name
+**Taskko** is a lightweight, personal AI-assisted task manager. The name
 is a Taglish play on "Task ko" ("My task").
 
 **Working tagline:** Your tasks. Your priorities. Your day.
@@ -407,7 +407,7 @@ silently decide them:
 - Whether asynchronous AI processing is necessary, to be decided after
   measuring response time.
 - Whether and when to conduct domain, app-store, and trademark checks
-  for the TaskKo working name.
+  for the Taskko working name.
 
 ## 11. Source of Truth and Keeping Context Current
 
@@ -418,7 +418,7 @@ disagree:
     schema, models, and tests) as the factual record of what exists.
 2.  Treat the latest developer-approved project decisions as the
     intended direction.
-3.  Treat this file and the TaskKo Project Context & Continuity Brief as
+3.  Treat this file and the Taskko Project Context & Continuity Brief as
     guidance, not proof that a feature has been implemented.
 4.  Do not resolve meaningful conflicts by guessing. Explain the
     discrepancy and ask the developer which direction to follow.

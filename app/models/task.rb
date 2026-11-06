@@ -36,6 +36,22 @@ class Task < ApplicationRecord
   scope :active, -> { where(completed_at: nil) }
   scope :completed, -> { where.not(completed_at: nil) }
 
+  scope :by_status, ->(status) {
+    case status
+    when "active" then active
+    when "completed" then completed
+    else all
+    end
+  }
+
+  scope :by_category, ->(category_id) {
+    category_id.present? ? where(category_id: category_id) : all
+  }
+
+  scope :by_priority, ->(priority) {
+    priority.present? && PRIORITIES.include?(priority) ? where(priority: priority) : all
+  }
+
   # A task can exist without being assigned to a category
   belongs_to :category, optional: true
 
