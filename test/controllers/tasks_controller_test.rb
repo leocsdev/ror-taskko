@@ -195,4 +195,27 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal "text/vnd.turbo-stream.html", response.media_type
   end
+
+  test "should get today view by default and display ranked active tasks" do
+    overdue_task = Task.create!(name: "Past Due Work", priority: "urgent", due_at: 1.day.ago)
+    future_task = Task.create!(name: "Future Work", priority: "low", due_at: 5.days.from_now)
+
+    get root_url
+    assert_response :success
+    assert_select "h1", text: "Today's Focus"
+    assert_select "span", text: /Overdue/
+  end
+
+  test "should get all tasks backlog view with view=all" do
+    get root_url, params: { view: "all" }
+    assert_response :success
+    assert_select "h1", text: "My Tasks"
+    assert_select "nav[aria-label='Task status filter']"
+  end
+
+  test "should get today route via today_url" do
+    get today_url
+    assert_response :success
+    assert_select "h1", text: "Today's Focus"
+  end
 end
