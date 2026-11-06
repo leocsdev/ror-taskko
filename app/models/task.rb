@@ -31,6 +31,9 @@ class Task < ApplicationRecord
   PRIORITIES = %w[low medium high urgent].freeze
   AI_STATUSES = %w[not_requested pending completed failed].freeze
 
+  # Ephemeral scoring and explainability attributes for Today view ranking
+  attr_accessor :ranking_reason, :priority_score
+
   # Scopes
   scope :ordered, -> { order(created_at: :desc) }
   scope :active, -> { where(completed_at: nil) }
