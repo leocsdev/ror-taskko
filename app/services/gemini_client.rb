@@ -4,7 +4,7 @@ require "json"
 
 class GeminiClient
   BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models".freeze
-  DEFAULT_MODEL = "gemini-3.8-flash".freeze
+  DEFAULT_MODEL = "gemini-3.5-flash".freeze
 
   # Base error class for all Gemini-related issues
   class Error < StandardError; end
@@ -14,6 +14,7 @@ class GeminiClient
   class RateLimitError < Error; end
   class TimeoutError < Error; end
   class ApiError < Error; end
+  class ServiceUnavailableError < Error; end
   class NetworkError < Error; end
 
   attr_reader :api_key, :model
@@ -73,7 +74,7 @@ class GeminiClient
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     http.open_timeout = 5
-    http.read_timeout = 10
+    http.read_timeout = 15
 
     http.request(request)
   rescue Net::OpenTimeout, Net::ReadTimeout => e
@@ -99,6 +100,8 @@ class GeminiClient
       text
     when 429
       raise RateLimitError, "Gemini rate limit exceeded (HTTP 429). Please wait a moment before trying again."
+    when 503
+      raise ServiceUnavailableError, "Gemini is experiencing high demand. Please try again later."
     else
       error_message = data.is_a?(Hash) ? data.dig("error", "message") : nil
       detail = error_message || response.body
