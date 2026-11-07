@@ -26,6 +26,11 @@ class GeminiClient
     validate_configuration!
   end
 
+  # Custom inspect to avoid leaking API keys in logs/debugging
+  def inspect
+    "#<#{self.class.name} model=#{model.inspect} api_key=\"[FILTERED]\">"
+  end
+
   private
 
   def validate_configuration!
