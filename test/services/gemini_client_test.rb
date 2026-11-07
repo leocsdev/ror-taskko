@@ -93,4 +93,19 @@ class GeminiClientTest < ActiveSupport::TestCase
 
     assert_match(/rate limit exceeded/, error.message)
   end
+
+  test "generate_content raises TimeoutError when request times out" do
+    endpoint = "#{GeminiClient::BASE_URL}/gemini-3.6-flash:generateContent"
+
+    # Tell WebMock to instantly simulate a socket timeout
+    stub_request(:post, endpoint).to_timeout
+
+    client = GeminiClient.new
+
+    error = assert_raises(GeminiClient::TimeoutError) do
+      client.generate_content("Analyze this task")
+    end
+
+    assert_match(/timed out/, error.message)
+  end
 end
