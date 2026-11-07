@@ -122,4 +122,19 @@ class GeminiClientTest < ActiveSupport::TestCase
 
     assert_match(/high demand/, error.message)
   end
+
+  test "generate_content raises NetworkError when connection fails" do
+    endpoint = "#{GeminiClient::BASE_URL}/gemini-3.6-flash:generateContent"
+
+    # Tell WebMock to raise a socket-level error
+    stub_request(:post, endpoint).to_raise(SocketError.new("Failed to open TCP connection"))
+
+    client = GeminiClient.new
+
+    error = assert_raises(GeminiClient::NetworkError) do
+      client.generate_content("Analyze this task")
+    end
+
+    assert_match(/Network error reaching Gemini/, error.message)
+  end
 end
