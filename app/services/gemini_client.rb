@@ -4,7 +4,7 @@ require "json"
 
 class GeminiClient
   BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models".freeze
-  DEFAULT_MODEL = "gemini-2.5-flash".freeze
+  DEFAULT_MODEL = "gemini-3.8-flash".freeze
 
   # Base error class for all Gemini-related issues
   class Error < StandardError; end
