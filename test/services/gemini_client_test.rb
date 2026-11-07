@@ -3,6 +3,11 @@ require "test_helper"
 class GeminiClientTest < ActiveSupport::TestCase
   include WebMock::API
 
+  # Wipes all stub_request definitions after each test
+  teardown do
+    WebMock.reset!
+  end
+
   test "initializes with default model and credentials from Rails credentials" do
     client = GeminiClient.new
 
