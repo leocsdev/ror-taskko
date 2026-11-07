@@ -129,4 +129,46 @@ class TaskTest < ActiveSupport::TestCase
     task.completed_at = Time.current
     assert_not task.overdue?
   end
+
+  test "scope by_status filters tasks by status" do
+    active_task = Task.create!(name: "Active task", priority: "medium", completed_at: nil)
+    completed_task = Task.create!(name: "Completed task", priority: "low", completed_at: Time.current)
+
+    assert_includes Task.by_status("active"), active_task
+    assert_not_includes Task.by_status("active"), completed_task
+
+    assert_includes Task.by_status("completed"), completed_task
+    assert_not_includes Task.by_status("completed"), active_task
+
+    assert_includes Task.by_status("all"), active_task
+    assert_includes Task.by_status("all"), completed_task
+    assert_includes Task.by_status(nil), active_task
+    assert_includes Task.by_status(nil), completed_task
+  end
+
+  test "scope by_category filters tasks by category_id" do
+    category1 = Category.create!(name: "Design")
+    category2 = Category.create!(name: "Marketing")
+    task1 = Task.create!(name: "Figma wireframe", category: category1, priority: "medium")
+    task2 = Task.create!(name: "Campaign brief", category: category2, priority: "medium")
+
+    assert_includes Task.by_category(category1.id), task1
+    assert_not_includes Task.by_category(category1.id), task2
+
+    assert_includes Task.by_category(nil), task1
+    assert_includes Task.by_category(nil), task2
+  end
+
+  test "scope by_priority filters tasks by priority" do
+    task_high = Task.create!(name: "High task", priority: "high")
+    task_low = Task.create!(name: "Low task", priority: "low")
+
+    assert_includes Task.by_priority("high"), task_high
+    assert_not_includes Task.by_priority("high"), task_low
+
+    assert_includes Task.by_priority(nil), task_high
+    assert_includes Task.by_priority(nil), task_low
+    assert_includes Task.by_priority("invalid_priority"), task_high
+    assert_includes Task.by_priority("invalid_priority"), task_low
+  end
 end
