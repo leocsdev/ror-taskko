@@ -48,4 +48,12 @@ class GeminiClientTest < ActiveSupport::TestCase
     # 2. Verify the raw secret NEVER appears in the string
     assert_not_includes client.inspect, "super_secret_test_key_12345"
   end
+
+  test "generate_content raises ArgumentError when prompt is blank" do
+    client = GeminiClient.new
+
+    assert_raises(ArgumentError) { client.generate_content("") }
+    assert_raises(ArgumentError) { client.generate_content("   ") }
+    assert_raises(ArgumentError) { client.generate_content(nil) }
+  end
 end
