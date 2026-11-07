@@ -14,4 +14,28 @@ class GeminiClientTest < ActiveSupport::TestCase
     assert_equal "custom-model", client.model
     assert_equal "explicit_key", client.api_key
   end
+
+  test "raises ConfigurationError when api_key is missing or blank" do
+    original_env_key = ENV["GEMINI_API_KEY"]
+    begin
+      ENV["GEMINI_API_KEY"] = nil
+      # 1. Temporarily make Rails.application.credentials return an empty Hash {}
+      Rails.application.define_singleton_method(:credentials) { {} }
+
+      # Case A: api_key is nil and no credentials/ENV exist
+      error = assert_raises(GeminiClient::ConfigurationError) do
+        GeminiClient.new(api_key: nil)
+      end
+
+      assert_match(/Gemini API key is missing/, error.message)
+      # Case B: api_key is an empty or whitespace string
+      assert_raises(GeminiClient::ConfigurationError) do
+        GeminiClient.new(api_key: "")
+      end
+    ensure
+      # 2. Restore ENV and remove the singleton method so credentials works normally again
+      ENV["GEMINI_API_KEY"] = original_env_key
+      Rails.application.singleton_class.send(:remove_method, :credentials) rescue nil
+    end
+  end
 end
