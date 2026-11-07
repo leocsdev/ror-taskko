@@ -1,0 +1,88 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent
+    body:
+      encoding: UTF-8
+      string: '{"contents":[{"parts":[{"text":"Return a JSON object with a single
+        key \"status\" and value \"ok\"."}]}],"generationConfig":{"responseMimeType":"application/json"}}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - generativelanguage.googleapis.com
+      Content-Type:
+      - application/json
+      X-Goog-Api-Key:
+      - "<GEMINI_API_KEY>"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Gemini-Service-Tier:
+      - standard
+      Content-Type:
+      - application/json; charset=UTF-8
+      Vary:
+      - Origin
+      - Referer
+      - X-Origin
+      Date:
+      - Sat, 07 Nov 2026 12:12:44 GMT
+      Server:
+      - scaffolding on HTTPServer2
+      X-Xss-Protection:
+      - '0'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Server-Timing:
+      - gfet4t7; dur=4610
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        {
+          "candidates": [
+            {
+              "content": {
+                "parts": [
+                  {
+                    "text": "{\"status\": \"ok\"}",
+                    "thoughtSignature": "EsUFCsIFAWkUfRNYCoW8l4KNFwpA4Q8vIZ2bZvanNg7HYZfdQAHG6h/cVQvat0bhI2rC9Mf0Kxks3IgfDcXQYF4Z1jXbEprZq0PerlWxAKyfS4R31ciJ1OQN4tIFBitszgZg1cUUkZtIHE9ctyZWXjP1TOtC6JKEhUYdAHC6lI2tiP3YYaKnoycHVv3K/3wCHG8M+tqsDc3mVvnGXduxYsqtdhUSpVIPB1Gw6eWlYla5Mqf8yVtz8yrM3vOi2SgTxznVpuzcL0rboTSepJMfsG0a4RaHP6zdH4W3IKNkU4pcR0JLcls/6ZHSUQQZ1ocvIddndXksq5I0zeKBeBdZwxGaWd7AQPWHO46e8q/YM0krC2j4L/D4h7V7KUZWV7mgZTJVKLMOhUuni2BRR5WkQTa+JMCOonubECgCvCZfZIGnXjSoWYbllkF88TS1gs+czdsH24A9Ku2vWo55y273I/L5PRGGxnXaTVCsmhK+uob+AjdfsqeyPjkMUYfbGX/KePAkF1KuhTI3+We7HzRQCBV/spLDsdNvyzZDs/EVnBqHXZsWRpG2izQZ4Z/iaTPDoKhVLqZY5PyYXZ6rDExBbBoENG2Ae94j8JyAZDZaOjGvXhEagEhljRD0hnkb4d4EwTx5aoMg4ZHVIJ7w3ZS6XeXGr4B8lOfEtkQsvfT84s4J8KgzGFM7wOwl2HE7bsyXDavCvGH9MtJ4u9yyzr2eIjsFeL8aLyCybWgCl+eBMqt6x9CTu5RB2lpxac69+kgpuia+WZiZgXYziC12t1KEqcUQUlIvE4POShm7aegIFSTrnEAtDGT6AE50I6mrPYer6s3Df/KcX0G41IRjKCIpLGf+QTdLCCIrWt3Mu1gOqsRwMFy+sWtPOVQGV0eUvND/tQLr1slPSqSRwxh5DuDNSjQpUguVgHE4wMR71FBo2RMvY9TSW1jRAg=="
+                  }
+                ],
+                "role": "model"
+              },
+              "finishReason": "STOP",
+              "index": 0
+            }
+          ],
+          "usageMetadata": {
+            "promptTokenCount": 16,
+            "candidatesTokenCount": 6,
+            "totalTokenCount": 196,
+            "promptTokensDetails": [
+              {
+                "modality": "TEXT",
+                "tokenCount": 16
+              }
+            ],
+            "thoughtsTokenCount": 174,
+            "serviceTier": "standard"
+          },
+          "modelVersion": "gemini-3.6-flash",
+          "responseId": "txXvaoX8L62R0-kP5MbgoQw"
+        }
+  recorded_at: Sat, 07 Nov 2026 12:12:44 GMT
+recorded_with: VCR 6.4.1

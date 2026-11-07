@@ -56,4 +56,20 @@ class GeminiClientTest < ActiveSupport::TestCase
     assert_raises(ArgumentError) { client.generate_content("   ") }
     assert_raises(ArgumentError) { client.generate_content(nil) }
   end
+
+  test "generate_content successfully receives and parses a real response from Gemini" do
+    VCR.use_cassette("gemini_generate_content_success") do
+      client = GeminiClient.new
+      prompt = 'Return a JSON object with a single key "status" and value "ok".'
+
+      response_text = client.generate_content(prompt)
+
+      # 1. Verify we got a non-empty string back
+      assert_predicate response_text, :present?
+
+      # 2. Parse the JSON returned by Gemini to verify the structure
+      parsed_json = JSON.parse(response_text)
+      assert_equal "ok", parsed_json["status"]
+    end
+  end
 end
