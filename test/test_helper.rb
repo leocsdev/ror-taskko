@@ -1,6 +1,8 @@
 ENV["RAILS_ENV"] ||= "test"
+ENV["GEMINI_API_KEY"] ||= "test-dummy-api-key"
 require_relative "../config/environment"
 require "rails/test_help"
+require_relative "support/vcr"
 
 module ActiveSupport
   class TestCase
