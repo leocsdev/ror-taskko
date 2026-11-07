@@ -137,4 +137,23 @@ class GeminiClientTest < ActiveSupport::TestCase
 
     assert_match(/Network error reaching Gemini/, error.message)
   end
+
+  test "generate_content raises ApiError on unexpected HTTP errors" do
+    endpoint = "#{GeminiClient::BASE_URL}/gemini-3.6-flash:generateContent"
+
+    stub_request(:post, endpoint).to_return(
+      status: 500,
+      body: { error: { message: "Internal server error occurred on Gemini" } }.to_json,
+      headers: { "Content-Type" => "application/json" }
+    )
+
+    client = GeminiClient.new
+
+    error = assert_raises(GeminiClient::ApiError) do
+      client.generate_content("Analyze this task")
+    end
+
+    assert_match(/HTTP 500/, error.message)
+    assert_match(/Internal server error occurred on Gemini/, error.message)
+  end
 end
