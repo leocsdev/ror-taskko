@@ -38,4 +38,14 @@ class GeminiClientTest < ActiveSupport::TestCase
       Rails.application.singleton_class.send(:remove_method, :credentials) rescue nil
     end
   end
+
+  test "inspect masks the api_key to prevent leaking secrets in logs" do
+    client = GeminiClient.new(api_key: "super_secret_test_key_12345")
+
+    # 1. Verify the placeholder is shown
+    assert_includes client.inspect, 'api_key="[FILTERED]"'
+
+    # 2. Verify the raw secret NEVER appears in the string
+    assert_not_includes client.inspect, "super_secret_test_key_12345"
+  end
 end
