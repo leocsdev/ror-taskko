@@ -1,6 +1,8 @@
 require "test_helper"
 
 class GeminiClientTest < ActiveSupport::TestCase
+  include WebMock::API
+
   test "initializes with default model and credentials from Rails credentials" do
     client = GeminiClient.new
 
@@ -71,5 +73,24 @@ class GeminiClientTest < ActiveSupport::TestCase
       parsed_json = JSON.parse(response_text)
       assert_equal "ok", parsed_json["status"]
     end
+  end
+
+  test "generate_content raises RateLimitError when Gemini returns HTTP 429" do
+    endpoint = "#{GeminiClient::BASE_URL}/gemini-3.6-flash:generateContent"
+
+    # Tell WebMock to intercept the request and return status 429
+    stub_request(:post, endpoint).to_return(
+      status: 429,
+      body: { error: { message: "Resource has been exhausted" } }.to_json,
+      headers: { "Content-Type" => "application/json" }
+    )
+
+    client = GeminiClient.new
+
+    error = assert_raises(GeminiClient::RateLimitError) do
+      client.generate_content("Analyze this task")
+    end
+
+    assert_match(/rate limit exceeded/, error.message)
   end
 end
