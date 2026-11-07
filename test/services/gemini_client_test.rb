@@ -108,4 +108,18 @@ class GeminiClientTest < ActiveSupport::TestCase
 
     assert_match(/timed out/, error.message)
   end
+
+  test "generate_content raises ServiceUnavailableError when Gemini returns HTTP 503" do
+    endpoint = "#{GeminiClient::BASE_URL}/gemini-3.6-flash:generateContent"
+
+    stub_request(:post, endpoint).to_return(status: 503)
+
+    client = GeminiClient.new
+
+    error = assert_raises(GeminiClient::ServiceUnavailableError) do
+      client.generate_content("Analyze this task")
+    end
+
+    assert_match(/high demand/, error.message)
+  end
 end
