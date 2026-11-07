@@ -15,4 +15,22 @@ class GeminiClient
   class TimeoutError < Error; end
   class ApiError < Error; end
   class NetworkError < Error; end
+
+  attr_reader :api_key, :model
+
+  def initialize(api_key: nil, model: DEFAULT_MODEL)
+    @api_key = api_key || Rails.application.credentials.dig(:gemini, :api_key) ||
+      ENV["GEMINI_API_KEY"]
+    @model = model
+
+    validate_configuration!
+  end
+
+  private
+
+  def validate_configuration!
+    if @api_key.blank?
+      raise ConfigurationError, "Gemini API key is missing. Set it in Rails credentials (gemini.api_key) or ENV['GEMINI_API_KEY']."
+    end
+  end
 end
